@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz Submission</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; background-color: #f0f0f0; }
+    form { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: auto; }
+    input[type="text"], button { width: 100%; padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <form id="quizForm">
+    <h2>Simple Quiz</h2>
+    <label>What is 2 + 2?</label>
+    <input type="text" name="q1" required />
+    <label>Capital of France?</label>
+    <input type="text" name="q2" required />
+    <button type="submit">Submit</button>
+    <p id="result"></p>
+  </form>
+
+  <script>
+    const form = document.getElementById("quizForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const answers = {
+        q1: form.q1.value,
+        q2: form.q2.value
+      };
+
+      try {
+        const res = await fetch("https://your-backend-url.onrender.com/api/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ answers })
+        });
+
+        const json = await res.json();
+        result.textContent = json.message || "Submitted!";
+        form.reset();
+      } catch (err) {
+        result.textContent = "Submission failed.";
+      }
+    });
+  </script>
+</body>
+</html>
